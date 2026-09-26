@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FinanceFlow</title>
+
+<script>
+  // Tema/cor salvos neste aparelho — aplicados antes da página aparecer
+  try {
+    var t = localStorage.getItem('ff-tema'), c = localStorage.getItem('ff-cor');
+    if (t) document.documentElement.dataset.tema = t;
+    if (c) document.documentElement.dataset.cor = c;
+  } catch (e) {}
+</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0E0F0D">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/ff-favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/icons/ff-apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FinanceFlow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- OVERLAY MOBILE -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileSidebar()"></div>
+
+<!-- MENU LATERAL MOBILE (aberto pelo "Mais" da barra inferior) -->
+<div class="mobile-sidebar" id="mobile-sidebar">
+  <div class="mobile-sidebar-header">
+    <span class="brand"><svg class="logo-mark" width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="7"/><path d="M9 20V10h11M9 15h8"/></svg><span>FinanceFlow</span></span>
+    <button class="mobile-sidebar-close" onclick="closeMobileSidebar()" aria-label="Fechar menu">✕</button>
+  </div>
+  <nav id="mobile-nav">
+    <button class="active" onclick="showTab('dashboard')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span>Painel</span></button>
+    <button onclick="showTab('transacoes')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h13M16 3l4 4-4 4M17 17H4M8 13l-4 4 4 4"/></svg><span>Transações</span></button>
+    <button onclick="showTab('parcelas')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18M7 15h4"/></svg><span>Parcelas</span></button>
+    <button onclick="showTab('futuras')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg><span>Contas futuras</span></button>
+    <button onclick="showTab('bancos')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"/></svg><span>Bancos</span></button>
+    <button onclick="showTab('investimentos')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg><span>Investimentos</span></button>
+    <button onclick="showTab('relatorio')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/></svg><span>Relatório</span></button>
+    <button onclick="showTab('ia')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Assistente</span></button>
+    <button class="admin-only nav-admin" onclick="showTab('admin')" hidden><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Admin</span></button>
+    <div class="nav-sep"></div>
+    <button class="js-instalar" onclick="closeMobileSidebar(); instalarApp()" hidden><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>Instalar app no celular</span></button>
+    <button onclick="closeMobileSidebar(); iniciarTour()"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM10 8.5v7l6-3.5z"/></svg><span>Ver o tour de novo</span></button>
+    <button onclick="closeMobileSidebar(); openConfig()"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Minha conta</span></button>
+    <button onclick="doLogout()"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg><span>Sair</span></button>
+  </nav>
+</div>
+
+<!-- TELA DE ENTRADA (login + cadastro) -->
+<div id="login-screen">
+  <aside class="auth-hero">
+    <div class="brand brand-lg"><svg class="logo-mark" width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="7"/><path d="M9 20V10h11M9 15h8"/></svg><span>FinanceFlow</span></div>
+
+    <div class="auth-hero-body">
+      <div class="eyebrow">Controle financeiro pessoal</div>
+      <h1 class="auth-headline">Dinheiro organizado,<br>decisões mais calmas.</h1>
+      <p class="auth-lead">Lance, importe e acompanhe tudo o que entra e sai. O mês fechado em uma tela, sem planilha.</p>
+
+      <div class="ledger" aria-hidden="true">
+        <div class="ledger-head"><span>Setembro</span><span class="num pos">+ R$ 1.284,50</span></div>
+        <div class="ledger-row"><span class="num dim">05/09</span><span>Salário <em>· Renda</em></span><span class="num pos">+ 6.200,00</span></div>
+        <div class="ledger-row"><span class="num dim">08/09</span><span>Aluguel <em>· Moradia</em></span><span class="num">− 2.150,00</span></div>
+        <div class="ledger-row"><span class="num dim">12/09</span><span>Mercado <em>· Alimentação</em></span><span class="num">− 684,30</span></div>
+        <div class="ledger-row"><span class="num dim">15/09</span><span>Notebook 3/10 <em>· Parcela</em></span><span class="num">− 412,90</span></div>
+      </div>
+    </div>
+
+    <div class="auth-facts">
+      <div><strong>Importação de extrato</strong>OFX, CSV, Excel ou PDF</div>
+      <div><strong>Assistente</strong>Pergunte sobre seus gastos</div>
+      <div><strong>Conta privada</strong>Só você vê seus dados</div>
+    </div>
+  </aside>
+
+  <main class="auth-panel">
+    <div class="auth-card">
+      <a href="/" class="auth-voltar">← Conhecer o FinanceFlow</a>
+      <div class="auth-card-brand brand"><svg class="logo-mark" width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="7"/><path d="M9 20V10h11M9 15h8"/></svg><span>FinanceFlow</span></div>
+
+      <div class="auth-tabs" id="auth-tabs" role="tablist">
+        <button type="button" class="active" data-modo="login" onclick="trocarModoAuth('login')" role="tab">Entrar</button>
+        <button type="button" data-modo="registro" onclick="trocarModoAuth('registro')" role="tab">Criar conta</button>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="form-login" class="auth-form" onsubmit="event.preventDefault(); doLogin()" novalidate>
+        <div class="auth-heading">
+          <h2>Bem-vindo de volta</h2>
+          <p>Entre com seu usuário ou e-mail.</p>
+        </div>
+        <div class="auth-field">
+          <label for="login-user">Usuário ou e-mail</label>
+          <div class="auth-input">
+            <input id="login-user" type="text" placeholder="voce@email.com" autocomplete="username" autocapitalize="none" spellcheck="false">
+          </div>
+        </div>
+        <div class="auth-field">
+          <div class="auth-label-row">
+            <label for="login-pass">Senha</label>
+            <a href="#" onclick="event.preventDefault(); trocarModoAuth('esqueci')">Esqueci a senha</a>
+          </div>
+          <div class="auth-input">
+            <input id="login-pass" type="password" placeholder="Sua senha" autocomplete="current-password">
+            <button type="button" class="auth-eye" onclick="alternarSenha(this)" aria-label="Mostrar senha">Mostrar</button>
+          </div>
+        </div>
+        <button type="submit" class="auth-submit" id="login-btn">Entrar</button>
+        <div class="login-error" id="login-error" role="alert"></div>
+        <p class="auth-switch" id="auth-switch-registro">Novo por aqui? <a href="#" onclick="event.preventDefault(); trocarModoAuth('registro')">Crie sua conta</a></p>
+      </form>
+
+      <!-- CADASTRO -->
+      <form id="form-registro" class="auth-form" onsubmit="event.preventDefault(); doRegistro()" novalidate hidden>
+        <div class="auth-heading">
+          <h2>Crie sua conta</h2>
+          <p>Grátis. Seus dados começam zerados e só você tem acesso.</p>
+        </div>
+        <div class="auth-field">
+          <label for="reg-nome">Nome</label>
+          <div class="auth-input">
+            <input id="reg-nome" type="text" placeholder="Como quer ser chamado" autocomplete="name" maxlength="60">
+          </div>
+        </div>
+        <div class="auth-row">
+          <div class="auth-field">
+            <label for="reg-usuario">Usuário</label>
+            <div class="auth-input">
+              <input id="reg-usuario" type="text" placeholder="seu.usuario" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')">
+            </div>
+          </div>
+          <div class="auth-field">
+            <label for="reg-email">E-mail</label>
+            <div class="auth-input">
+              <input id="reg-email" type="email" placeholder="voce@email.com" autocomplete="email" autocapitalize="none" spellcheck="false">
+            </div>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label for="reg-senha">Senha</label>
+          <div class="auth-input">
+            <input id="reg-senha" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" oninput="medirSenha(this.value)">
+            <button type="button" class="auth-eye" onclick="alternarSenha(this)" aria-label="Mostrar senha">Mostrar</button>
+          </div>
+          <div class="auth-strength" id="reg-forca"><span></span><span></span><span></span><span></span></div>
+          <small class="auth-hint" id="reg-forca-txt">Use letras, números e símbolos para uma senha forte.</small>
+        </div>
+        <div class="auth-field">
+          <label for="reg-senha2">Confirmar senha</label>
+          <div class="auth-input">
+            <input id="reg-senha2" type="password" placeholder="Repita a senha" autocomplete="new-password">
+          </div>
+        </div>
+        <button type="submit" class="auth-submit" id="reg-btn">Criar minha conta</button>
+        <div class="login-error" id="reg-error" role="alert"></div>
+        <p class="auth-switch">Já tem conta? <a href="#" onclick="event.preventDefault(); trocarModoAuth('login')">Entrar</a></p>
+      </form>
+
+      <!-- ESQUECI A SENHA: pede o e-mail -->
+      <form id="form-esqueci" class="auth-form" onsubmit="event.preventDefault(); pedirRedefinicao()" novalidate hidden>
+        <div class="auth-heading">
+          <h2>Esqueceu a senha?</h2>
+          <p>Informe o e-mail da sua conta. Enviaremos um link para você criar uma senha nova.</p>
+        </div>
+        <div class="auth-field">
+          <label for="esq-email">E-mail</label>
+          <div class="auth-input">
+            <input id="esq-email" type="email" placeholder="voce@email.com" autocomplete="email" autocapitalize="none" spellcheck="false">
+          </div>
+        </div>
+        <button type="submit" class="auth-submit" id="esq-btn">Enviar link</button>
+        <div class="login-error" id="esq-error" role="alert"></div>
+        <p class="auth-switch"><a href="#" onclick="event.preventDefault(); trocarModoAuth('login')">Voltar para o login</a></p>
+      </form>
+
+      <!-- ESQUECI A SENHA: confirmação -->
+      <div id="form-esqueci-ok" class="auth-form" hidden>
+        <div class="auth-heading">
+          <h2>Confira seu e-mail</h2>
+          <p>Se existir uma conta com <b id="esq-email-enviado"></b>, você vai receber um link para criar uma senha nova. Ele vale por 1 hora.</p>
+        </div>
+        <p class="auth-hint auth-hint-box">Não chegou em alguns minutos? Olhe a caixa de spam ou promoções. Se a sua conta não tem e-mail cadastrado, fale com o administrador.</p>
+        <button type="button" class="auth-submit" onclick="trocarModoAuth('login')">Voltar para o login</button>
+        <p class="auth-switch"><a href="#" onclick="event.preventDefault(); trocarModoAuth('esqueci')">Enviar para outro e-mail</a></p>
+      </div>
+
+      <!-- REDEFINIR: senha nova (aberto pelo link do e-mail) -->
+      <form id="form-redefinir" class="auth-form" onsubmit="event.preventDefault(); salvarNovaSenha()" novalidate hidden>
+        <div class="auth-heading">
+          <h2>Crie uma senha nova</h2>
+          <p>Depois de salvar, você já entra na sua conta.</p>
+        </div>
+        <div class="auth-field">
+          <label for="red-senha">Senha nova</label>
+          <div class="auth-input">
+            <input id="red-senha" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" oninput="medirSenha(this.value, 'red')">
+            <button type="button" class="auth-eye" onclick="alternarSenha(this)" aria-label="Mostrar senha">Mostrar</button>
+          </div>
+          <div class="auth-strength" id="red-forca"><span></span><span></span><span></span><span></span></div>
+          <small class="auth-hint" id="red-forca-txt">Use letras, números e símbolos para uma senha forte.</small>
+        </div>
+        <div class="auth-field">
+          <label for="red-senha2">Confirmar senha nova</label>
+          <div class="auth-input">
+            <input id="red-senha2" type="password" placeholder="Repita a senha" autocomplete="new-password">
+          </div>
+        </div>
+        <button type="submit" class="auth-submit" id="red-btn">Salvar senha nova</button>
+        <div class="login-error" id="red-error" role="alert"></div>
+      </form>
+
+      <!-- REDEFINIR: link inválido -->
+      <div id="form-link-invalido" class="auth-form" hidden>
+        <div class="auth-heading">
+          <h2>Link expirado</h2>
+          <p>Este link de redefinição expirou ou já foi usado. Peça um novo — leva só um instante.</p>
+        </div>
+        <button type="button" class="auth-submit" onclick="trocarModoAuth('esqueci')">Pedir um link novo</button>
+        <p class="auth-switch"><a href="#" onclick="event.preventDefault(); trocarModoAuth('login')">Voltar para o login</a></p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL MINHA CONTA -->
+<div class="modal-overlay" id="modal-config">
+  <div class="modal conta-modal">
+    <div class="modal-title">
+      <span>Minha conta</span>
+      <button onclick="closeConfig()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px" aria-label="Fechar">✕</button>
+    </div>
+    <div class="conta-head">
+      <div class="avatar avatar-lg" id="cfg-avatar"></div>
+      <div>
+        <div class="conta-nome" id="cfg-nome-atual"></div>
+        <div class="conta-sub" id="cfg-sub-atual"></div>
+      </div>
+    </div>
+    <div class="modal-section">Aparência</div>
+    <div class="aparencia" id="cfg-temas">
+      <button type="button" class="tema-opcao" data-tema="escuro" onclick="escolherAparencia({ tema: 'escuro' })">
+        <span class="tema-amostra escuro"><i></i><b></b></span>Escuro (padrão)
+      </button>
+      <button type="button" class="tema-opcao" data-tema="claro" onclick="escolherAparencia({ tema: 'claro' })">
+        <span class="tema-amostra claro"><i></i><b></b></span>Claro
+      </button>
+    </div>
+    <div class="form-group">
+      <label>Cor de destaque</label>
+      <div class="cores" id="cfg-cores">
+        <button type="button" class="cor-opcao" data-cor="latao" style="background:#D9A441" onclick="escolherAparencia({ cor: 'latao' })" aria-label="Latão (padrão)" title="Latão (padrão)"></button>
+        <button type="button" class="cor-opcao" data-cor="azul" style="background:#8FA8E0" onclick="escolherAparencia({ cor: 'azul' })" aria-label="Azul" title="Azul"></button>
+        <button type="button" class="cor-opcao" data-cor="lavanda" style="background:#B7A6E0" onclick="escolherAparencia({ cor: 'lavanda' })" aria-label="Lavanda" title="Lavanda"></button>
+        <button type="button" class="cor-opcao" data-cor="petroleo" style="background:#6FB7B7" onclick="escolherAparencia({ cor: 'petroleo' })" aria-label="Petróleo" title="Petróleo"></button>
+      </div>
+    </div>
+
+    <div class="modal-section">Ajuda</div>
+    <button type="button" class="btn btn-ghost" onclick="iniciarTour()" style="width:100%">Ver o tour de boas-vindas</button>
+
+    <div class="modal-section">Seus dados</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Baixe tudo o que você lançou — transações, bancos, parcelas, contas futuras e investimentos — numa planilha Excel.</p>
+    <button type="button" class="btn btn-ghost" id="btn-exportar-dados" onclick="baixarMeusDados()" style="width:100%">Baixar meus dados (Excel)</button>
+
+    <div class="modal-section">Perfil</div>
+    <div class="form-group">
+      <label>Nome</label>
+      <input id="cfg-nome" type="text" placeholder="Seu nome" autocomplete="name" maxlength="60">
+    </div>
+    <div class="form-group">
+      <label>E-mail</label>
+      <input id="cfg-email" type="email" placeholder="voce@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Usuário</label>
+      <input id="cfg-usuario" type="text" placeholder="Mín. 3 caracteres" autocomplete="off" autocapitalize="none" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')">
+    </div>
+    <div class="modal-section">Alterar senha <small style="font-weight:400;text-transform:none;letter-spacing:0">(opcional)</small></div>
+    <div class="form-group">
+      <label>Nova senha</label>
+      <input id="cfg-nova-senha" type="password" placeholder="Mín. 6 caracteres" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label>Confirmar nova senha</label>
+      <input id="cfg-nova-senha2" type="password" placeholder="Repita a nova senha" autocomplete="new-password">
+    </div>
+    <div class="modal-section">Confirmação</div>
+    <div class="form-group">
+      <label>Senha atual (obrigatória para salvar)</label>
+      <input id="cfg-senha-atual" type="password" placeholder="Senha atual" autocomplete="current-password">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-ghost" onclick="closeConfig()" style="flex:1;justify-content:center">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarConfig()" style="flex:2;justify-content:center">Salvar alterações</button>
+    </div>
+    <div id="cfg-erro" style="color:var(--red);font-size:13px;margin-top:10px;text-align:center"></div>
+
+    <div class="danger-zone" id="cfg-danger">
+      <div class="danger-title">Excluir conta</div>
+      <p>Apaga sua conta e <strong>todos</strong> os seus dados para sempre. Não dá para desfazer.</p>
+      <button class="btn btn-red btn-sm" onclick="excluirConta()">Excluir minha conta</button>
+    </div>
+  </div>
+</div>
+
+<!-- BARRA LATERAL (desktop) -->
+<aside class="sidebar">
+  <div class="brand"><svg class="logo-mark" width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="7"/><path d="M9 20V10h11M9 15h8"/></svg><span>FinanceFlow</span></div>
+  <nav>
+    <button class="active" onclick="showTab('dashboard')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span>Painel</span></button>
+    <button onclick="showTab('transacoes')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h13M16 3l4 4-4 4M17 17H4M8 13l-4 4 4 4"/></svg><span>Transações</span></button>
+    <button onclick="showTab('parcelas')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18M7 15h4"/></svg><span>Parcelas</span></button>
+    <button onclick="showTab('futuras')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg><span>Contas futuras</span></button>
+    <button onclick="showTab('bancos')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18"/></svg><span>Bancos</span></button>
+    <button onclick="showTab('investimentos')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg><span>Investimentos</span></button>
+    <button onclick="showTab('relatorio')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/></svg><span>Relatório</span></button>
+    <button onclick="showTab('ia')"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Assistente</span></button>
+    <button class="admin-only nav-admin" onclick="showTab('admin')" hidden><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Admin</span></button>
+  </nav>
+  <div class="sidebar-foot">
+    <button id="btn-instalar" class="side-link js-instalar" onclick="instalarApp()" hidden><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>Instalar app</span></button>
+    <button class="user-chip" onclick="openConfig()" title="Minha conta">
+      <span class="avatar" id="user-avatar"></span>
+      <span class="user-chip-txt"><span id="user-name"></span><small>Minha conta</small></span>
+    </button>
+    <button class="side-link" onclick="doLogout()"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg><span>Sair</span></button>
+  </div>
+</aside>
+
+<!-- BARRA DO TOPO (celular) -->
+<div class="topbar">
+  <div class="brand"><svg class="logo-mark" width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="7"/><path d="M9 20V10h11M9 15h8"/></svg><span>FinanceFlow</span></div>
+  <div class="topbar-acoes">
+    <button class="topbar-instalar js-instalar" onclick="instalarApp()" hidden><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>Instalar</span></button>
+    <button class="topbar-avatar" onclick="openConfig()" aria-label="Minha conta"><span class="avatar" id="user-avatar-m"></span></button>
+  </div>
+</div>
+
+<main class="app-main">
+
+<!-- CABEÇALHO DA PÁGINA + NAVEGAÇÃO POR MÊS -->
+<div class="page-head" id="month-nav">
+  <div class="page-head-left">
+    <span class="eyebrow-sm" id="page-titulo">Painel</span>
+    <div class="month-switch">
+      <button class="icon-btn" onclick="prevMes()" aria-label="Mês anterior"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <h1 id="month-label">Carregando...</h1>
+      <button class="icon-btn" onclick="nextMes()" aria-label="Próximo mês"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button id="btn-hoje" class="btn btn-ghost btn-sm" onclick="resetMes()" style="display:none">Mês atual</button>
+    </div>
+    <span id="month-saldo-ant" class="month-saldo-ant" style="display:none">
+      Saldo trazido: <span id="month-saldo-ant-val">R$ 0,00</span>
+    </span>
+  </div>
+  <div class="page-head-actions">
+    <button class="btn btn-ghost" onclick="showTab('bancos')"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Importar extrato</button>
+    <button class="btn btn-primary" onclick="novaTransacao()"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nova transação</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="tab active" id="tab-dashboard">
+  <div class="section primeiros-passos" id="primeiros-passos" hidden></div>
+
+  <div class="cards kpis">
+    <div class="card kpi-destaque">
+      <div class="card-label">Saldo do mês</div>
+      <div class="card-value" id="d-saldo">R$ 0,00</div>
+      <div class="card-note">entradas menos saídas</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Entradas</div>
+      <div class="card-value green" id="d-entradas">R$ 0,00</div>
+      <div class="card-note">recebido e a receber</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Saídas</div>
+      <div class="card-value red" id="d-saidas">R$ 0,00</div>
+      <div class="card-note">pago e a pagar</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Saldo anterior</div>
+      <div class="card-value" id="d-saldo-anterior">R$ 0,00</div>
+      <div class="card-note">trazido dos meses anteriores</div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Entradas e saídas · 6 meses</span>
+        <div class="chart-legend"><span><i style="background:var(--green)"></i>Entradas</span><span><i style="background:var(--red)"></i>Saídas</span></div>
+      </div>
+      <div id="d-grafico"><div class="empty">Carregando...</div></div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-title">Para onde foi o dinheiro</span></div>
+      <div id="d-categorias"><div class="empty">Carregando...</div></div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Últimas transações</span>
+        <a href="#" class="link" onclick="event.preventDefault(); showTab('transacoes')">Ver todas</a>
+      </div>
+      <div id="d-ultimas"><div class="empty">Carregando...</div></div>
+    </div>
+  <div class="section" id="card-limite">
+    <div class="section-header">
+      <span class="section-title" id="titulo-limite">Limite de gasto do mês</span>
+      <button class="btn btn-ghost btn-sm" id="btn-ativar-notif" onclick="ativarNotificacoes()">Ativar notificações no celular</button>
+    </div>
+    <div id="lg-sem-notif" style="font-size:12px; color:var(--muted); margin-bottom:10px; display:none">
+      Ative as notificações acima pra receber o aviso na hora que o limite estourar.
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Limite mensal (R$)</label>
+        <input id="lg-valor" type="number" step="0.01" placeholder="3000,00">
+      </div>
+      <div class="form-group" style="justify-content:flex-end; flex:0">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" onclick="salvarLimiteGasto()">Salvar</button>
+      </div>
+      <div class="form-group" style="justify-content:flex-end; flex:0">
+        <label>&nbsp;</label>
+        <button class="btn btn-ghost" onclick="removerLimiteGasto()" id="btn-remover-limite" style="display:none">Remover</button>
+      </div>
+    </div>
+    <div id="lg-progresso" style="display:none; margin-top:8px">
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px">
+        <span id="lg-texto"></span>
+        <span id="lg-pct"></span>
+      </div>
+      <div style="background:var(--bg3); border-radius:8px; height:10px; overflow:hidden">
+        <div id="lg-barra" style="height:100%; border-radius:8px; transition:width .3s"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- TRANSAÇÕES -->
+<div class="tab" id="tab-transacoes">
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Nova Transação</span>
+      <label class="btn btn-purple btn-sm" style="cursor:pointer">
+        Foto IA
+        <input type="file" accept="image/*" id="foto-input" style="display:none" onchange="uploadFoto(this)">
+      </label>
+    </div>
+    <div class="form-row" id="form-transacao">
+      <div class="form-group" style="flex:2">
+        <label>Descrição</label>
+        <input id="t-desc" placeholder="Ex: Almoço no restaurante">
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="t-tipo" onchange="atualizarOpcoesStatus()">
+          <option value="saida">Saída</option>
+          <option value="entrada">Entrada</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="t-cat">
+          <option>Alimentação</option><option>Moradia</option><option>Transporte</option>
+          <option>Saúde</option><option>Educação</option><option>Lazer</option>
+          <option>Roupas</option><option>Serviços</option><option>Salário</option>
+          <option>Investimentos</option><option>Outros</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Valor (R$)</label>
+        <input id="t-valor" type="number" step="0.01" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label>Data</label>
+        <input id="t-data" type="date">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="t-status">
+          <option value="pago">Pago</option>
+          <option value="pendente">Pendente</option>
+          <option value="a_pagar">A Pagar</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Banco</label>
+        <select id="t-banco">
+          <option value="">Nenhum</option>
+        </select>
+      </div>
+      <div class="form-group" style="justify-content:flex-end; flex:0; flex-direction:row; gap:6px">
+        <button class="btn btn-primary" id="btn-salvar-transacao" onclick="addTransacao()">Adicionar</button>
+        <button class="btn btn-ghost" id="btn-cancelar-edicao" onclick="cancelarEdicao()" style="display:none">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Importar planilha de gastos (multi-mês, não vinculada a banco) -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Importar Planilha de Gastos</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:4px 0 8px">
+      <input type="file" id="planilha-arquivo" accept=".ofx,.csv,.txt,.xlsx" style="max-width:280px">
+      <div class="form-group" id="planilha-mes-wrap" style="display:none; flex:0">
+        <label style="font-size:11px">Mês de referência</label>
+        <input type="month" id="planilha-mes-referencia" style="max-width:160px">
+      </div>
+      <button class="btn btn-primary" onclick="importarPlanilha()" id="btn-importar-planilha" style="gap:8px">
+        Importar e Substituir os Meses
+      </button>
+    </div>
+    <div style="font-size:12px; color:var(--muted)">
+      Jogue aqui uma planilha (.xlsx/.csv) com quantos meses de gastos você quiser de uma vez — as colunas de data, descrição, valor e categoria são detectadas automaticamente.
+      Para cada mês que aparecer na planilha, o sistema <b>substitui</b> as transações importadas anteriormente daquele mês pelas novas, evitando duplicidade. Lançamentos que você cadastrou manualmente não são afetados.
+      Planilhas de <b>orçamento mensal</b> (grade de categorias com "Custo Previsto"/"Custo Real", sem data por lançamento) também são aceitas — todos os itens são registrados no dia 1º do mês de referência que você informar.
+    </div>
+    <div id="planilha-status" style="font-size:12px; color:var(--muted); display:none; margin-top:6px"></div>
+  </div>
+
+  <div class="section">
+    <!-- Botões de ação em lote do mês -->
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px">
+      <button class="btn btn-green btn-sm" onclick="pagarMesInteiro()" title="Marca tudo que está pendente/a pagar/a receber deste mês como quitado">
+        Pagar mês inteiro
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="duplicarMes()" title="Copia todas as transações deste mês para o próximo">
+        Duplicar mês inteiro para o próximo
+      </button>
+      <button class="btn btn-red btn-sm" onclick="excluirMesInteiro()" title="Apaga TODAS as transações deste mês — não pode ser desfeito">
+        Excluir mês inteiro
+      </button>
+    </div>
+
+    <!-- Resumo de status -->
+    <div class="status-summary" id="t-status-summary">
+      <div class="status-stat">
+        <div class="status-stat-label">Pagas / Recebidas</div>
+        <div class="status-stat-val pago" id="t-count-pago">—</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-label">A Receber</div>
+        <div class="status-stat-val a_receber" id="t-count-a_receber">—</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-label">Pendentes</div>
+        <div class="status-stat-val pendente" id="t-count-pendente">—</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-label">A Pagar</div>
+        <div class="status-stat-val a_pagar" id="t-count-a_pagar">—</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-label" style="color:var(--red)">Total A Pagar</div>
+        <div class="status-stat-val a_pagar" id="t-valor-a_pagar">—</div>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters" style="margin-bottom:10px">
+      <input id="f-busca" placeholder="Buscar..." oninput="loadTransacoes()">
+      <select id="f-tipo" onchange="loadTransacoes()">
+        <option value="">Todos tipos</option>
+        <option value="entrada">Entradas</option>
+        <option value="saida">Saídas</option>
+      </select>
+      <select id="f-cat" onchange="loadTransacoes()">
+        <option value="">Todas categorias</option>
+        <option>Alimentação</option><option>Moradia</option><option>Transporte</option>
+        <option>Saúde</option><option>Educação</option><option>Lazer</option>
+        <option>Roupas</option><option>Serviços</option><option>Salário</option>
+        <option>Investimentos</option><option>Outros</option>
+      </select>
+      <button class="btn btn-ghost btn-sm" id="btn-exportar-transacoes-pdf" onclick="exportarTransacoesPDF()" style="margin-left:auto">Exportar PDF</button>
+    </div>
+    <!-- Filtro de status por pills -->
+    <div class="status-pills" style="margin-bottom:16px" id="t-status-pills">
+      <span style="font-size:12px;color:var(--muted)">Filtrar:</span>
+      <button class="status-pill active" data-status="" onclick="setStatusFilter('')">Todos</button>
+      <button class="status-pill" data-status="recebido" onclick="setStatusFilter('recebido')">Recebido</button>
+      <button class="status-pill" data-status="pago" onclick="setStatusFilter('pago')">Pago</button>
+      <button class="status-pill" data-status="a_receber" onclick="setStatusFilter('a_receber')">A Receber</button>
+      <button class="status-pill" data-status="pendente" onclick="setStatusFilter('pendente')">Pendente</button>
+      <button class="status-pill" data-status="a_pagar" onclick="setStatusFilter('a_pagar')">A Pagar</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:90px">Data</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th style="width:120px">Status</th>
+            <th style="width:70px"></th>
+          </tr>
+        </thead>
+        <tbody id="t-list"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PARCELAS -->
+<div class="tab" id="tab-parcelas">
+  <div class="section">
+    <div class="section-header"><span class="section-title">Nova Parcela</span></div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label>Descrição</label>
+        <input id="p-desc" placeholder="Ex: TV Samsung">
+      </div>
+      <div class="form-group">
+        <label>Valor Total (R$)</label>
+        <input id="p-total" type="number" step="0.01" placeholder="1200,00">
+      </div>
+      <div class="form-group">
+        <label>Nº Parcelas</label>
+        <input id="p-num" type="number" min="1" placeholder="12">
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="p-cat">
+          <option>Eletrônicos</option><option>Roupas</option><option>Móveis</option>
+          <option>Veículos</option><option>Saúde</option><option>Outros</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Data Início</label>
+        <input id="p-data" type="date">
+      </div>
+      <div class="form-group" style="justify-content:flex-end; flex:0">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" onclick="addParcela()">Adicionar</button>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div id="p-list"><div class="empty">Nenhuma parcela</div></div>
+  </div>
+</div>
+
+<!-- FUTURAS -->
+<div class="tab" id="tab-futuras">
+  <div class="section">
+    <div class="section-header"><span class="section-title">Nova Despesa Futura</span></div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label>Descrição</label>
+        <input id="fu-desc" placeholder="Ex: IPTU">
+      </div>
+      <div class="form-group">
+        <label>Valor (R$)</label>
+        <input id="fu-valor" type="number" step="0.01" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label>Data Prevista</label>
+        <input id="fu-data" type="date">
+      </div>
+      <div class="form-group">
+        <label>Prioridade</label>
+        <select id="fu-prio">
+          <option value="alta">Alta</option>
+          <option value="media" selected>Média</option>
+          <option value="baixa">Baixa</option>
+        </select>
+      </div>
+      <div class="form-group" style="justify-content:flex-end; flex:0">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" onclick="addFutura()">Adicionar</button>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Descrição</th><th>Valor</th><th>Data</th><th>Prioridade</th><th></th></tr></thead>
+        <tbody id="fu-list"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- BANCOS -->
+<div class="tab" id="tab-bancos">
+
+  <!-- Importação de extrato (gratuita) -->
+  <div class="section" style="margin-bottom:16px">
+    <div class="section-header">
+      <span class="section-title">Importar Extrato ou Planilha (Grátis)</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:4px 0 8px">
+      <select id="extrato-banco" style="min-width:200px">
+        <option value="">Detectar banco automaticamente</option>
+      </select>
+      <div style="display:flex; align-items:center; gap:6px">
+        <span style="font-size:12px; color:var(--muted)">Titular:</span>
+        <select id="extrato-titular" style="min-width:110px">
+          <option value="Você" selected>Você</option>
+          <option value="Esposa">Esposa</option>
+        </select>
+      </div>
+      <input type="file" id="extrato-arquivo" accept=".ofx,.csv,.txt,.xlsx,.pdf" style="max-width:260px">
+      <button class="btn btn-primary" onclick="importarExtrato()" id="btn-importar-extrato" style="gap:8px">
+        Importar
+      </button>
+    </div>
+    <div style="font-size:12px; color:var(--muted)">Exporte o extrato em OFX/CSV/PDF do app do banco, ou jogue direto sua própria planilha Excel (.xlsx) — as colunas de data, descrição e valor são detectadas automaticamente. Não sabe de qual banco é? Deixe em branco: o banco é identificado pelo conteúdo do arquivo e cadastrado sozinho se ainda não existir — um banco por titular, então "Nubank" seu e "Nubank" da sua esposa nunca se misturam.</div>
+    <div id="extrato-status" style="font-size:12px; color:var(--muted); display:none"></div>
+  </div>
+
+  <!-- Adição / edição manual -->
+  <div class="section">
+    <div class="section-header"><span class="section-title" id="b-form-titulo">Adicionar Conta</span></div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label>Banco</label>
+        <input id="b-nome" placeholder="Ex: Nubank, Itaú, Inter" oninput="sugerirCorBanco(this, document.getElementById('b-cor'))">
+      </div>
+      <div class="form-group">
+        <label>Agência</label>
+        <input id="b-agencia" placeholder="0001">
+      </div>
+      <div class="form-group">
+        <label>Conta</label>
+        <input id="b-conta" placeholder="****-*">
+      </div>
+      <div class="form-group">
+        <label>Saldo (R$)</label>
+        <input id="b-saldo" type="number" step="0.01" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label>Cor</label>
+        <input id="b-cor" type="color" value="#3b82f6" style="height:38px; padding:2px 4px;">
+      </div>
+      <div class="form-group" style="flex:1.4">
+        <label>Titular</label>
+        <input id="b-titular" placeholder="Ex: Você, Esposa" value="Você">
+        <div style="display:flex; gap:6px; margin-top:6px">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('b-titular').value='Você'">Você</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('b-titular').value='Esposa'">Esposa</button>
+        </div>
+      </div>
+      <div class="form-group" style="justify-content:flex-end; flex:0; gap:6px; flex-direction:row">
+        <button class="btn btn-ghost" id="b-btn-cancelar" onclick="cancelarEdicaoBanco()" style="display:none">Cancelar</button>
+        <button class="btn btn-primary" id="b-btn-salvar" onclick="salvarBanco()">Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="b-grupos"></div>
+</div>
+
+<!-- MODAL: VISUALIZAR BANCO -->
+<div class="modal-overlay" id="modal-banco-detalhe">
+  <div class="modal modal-wide">
+    <div class="modal-title">
+      <span id="bd-titulo">Banco</span>
+      <button onclick="fecharDetalheBanco()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px">✕</button>
+    </div>
+    <div id="bd-header" style="margin-bottom:16px"></div>
+    <div class="status-summary" id="bd-stat-summary" style="margin-bottom:14px">
+      <div class="status-stat">
+        <div class="status-stat-label">Saldo Atual</div>
+        <div class="status-stat-val" id="bd-saldo">—</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-label" style="color:var(--green)">↑ Entradas</div>
+        <div class="status-stat-val pago" id="bd-entradas">—</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-label" style="color:var(--red)">↓ Saídas</div>
+        <div class="status-stat-val a_pagar" id="bd-saidas">—</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-label">Transações</div>
+        <div class="status-stat-val" id="bd-total">—</div>
+      </div>
+    </div>
+    <div class="filters" style="margin-bottom:10px">
+      <input id="bd-busca" placeholder="Buscar no extrato..." oninput="loadDetalheBanco()">
+    </div>
+    <div class="table-wrap" style="max-height:420px; overflow-y:auto">
+      <table>
+        <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Tipo</th><th>Valor</th><th>Status</th></tr></thead>
+        <tbody id="bd-list"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- INVESTIMENTOS -->
+<div class="tab" id="tab-investimentos">
+
+  <!-- Barra de cotações -->
+  <div class="ticker-bar" id="inv-ticker-bar">
+    <div class="empty">Carregando cotações...</div>
+  </div>
+
+  <!-- Resumo da carteira -->
+  <div class="status-summary" id="inv-resumo" style="margin-bottom:20px">
+    <div class="status-stat">
+      <div class="status-stat-label">Investido</div>
+      <div class="status-stat-val" id="inv-total-investido">—</div>
+    </div>
+    <div class="status-stat">
+      <div class="status-stat-label">Valor Atual</div>
+      <div class="status-stat-val" id="inv-total-atual">—</div>
+    </div>
+    <div class="status-stat">
+      <div class="status-stat-label">Lucro/Prejuízo</div>
+      <div class="status-stat-val" id="inv-total-lucro">—</div>
+    </div>
+    <div class="status-stat">
+      <div class="status-stat-label">Variação</div>
+      <div class="status-stat-val" id="inv-total-lucro-pct">—</div>
+    </div>
+  </div>
+
+  <!-- Sugestão da IA -->
+  <div class="section" style="margin-bottom:20px">
+    <div class="section-header">
+      <span class="section-title">Sugestão da IA</span>
+      <button class="btn btn-primary btn-sm" onclick="pedirRecomendacaoIA()" id="btn-recomendacao-ia">Pedir sugestão</button>
+    </div>
+    <div id="inv-ia-resultado"><div class="empty">Clique em "Pedir sugestão" para uma análise da sua carteira e do seu saldo livre.</div></div>
+  </div>
+
+  <!-- Adicionar posição -->
+  <div class="section">
+    <div class="section-header"><span class="section-title" id="inv-form-titulo">Adicionar Posição</span></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="inv-tipo" onchange="atualizarFormInvestimento()">
+          <option value="acao">Ação</option>
+          <option value="fii">FII</option>
+          <option value="cripto">Criptomoeda</option>
+          <option value="renda_fixa">Renda Fixa</option>
+        </select>
+      </div>
+      <div class="form-group" id="inv-grupo-ticker">
+        <label>Ticker</label>
+        <input id="inv-ticker" placeholder="Ex: PETR4, BTC">
+      </div>
+      <div class="form-group" style="flex:2">
+        <label>Nome</label>
+        <input id="inv-nome" placeholder="Ex: Petrobras PN, CDB Banco XP">
+      </div>
+      <div class="form-group" id="inv-grupo-qtd">
+        <label>Quantidade</label>
+        <input id="inv-quantidade" type="number" step="0.00000001" placeholder="0">
+      </div>
+      <div class="form-group" id="inv-grupo-preco">
+        <label>Preço Médio (R$)</label>
+        <input id="inv-preco-medio" type="number" step="0.01" placeholder="0,00">
+      </div>
+      <div class="form-group" id="inv-grupo-valor-aplicado" style="display:none">
+        <label>Valor Aplicado (R$)</label>
+        <input id="inv-valor-aplicado" type="number" step="0.01" placeholder="0,00">
+      </div>
+      <div class="form-group" id="inv-grupo-rentabilidade" style="display:none">
+        <label>Rentabilidade</label>
+        <input id="inv-rentabilidade" placeholder="Ex: CDI 110%, IPCA + 6%">
+      </div>
+      <div class="form-group">
+        <label>Banco/Corretora</label>
+        <select id="inv-banco"><option value="">Nenhum</option></select>
+      </div>
+      <div class="form-group" style="justify-content:flex-end; flex:0; gap:6px; flex-direction:row">
+        <button class="btn btn-ghost" id="inv-btn-cancelar" onclick="cancelarEdicaoInvestimento()" style="display:none">Cancelar</button>
+        <button class="btn btn-primary" id="inv-btn-salvar" onclick="salvarInvestimento()">Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="inv-lista" style="margin-top:16px"></div>
+</div>
+
+<!-- RELATÓRIO -->
+<div class="tab" id="tab-relatorio">
+
+  <!-- Seletor de período -->
+  <div class="rel-periodo-wrap">
+    <button class="rel-periodo-btn" data-periodo="dia" onclick="setRelPeriodo('dia')">Hoje</button>
+    <button class="rel-periodo-btn" data-periodo="semana" onclick="setRelPeriodo('semana')">Semana</button>
+    <button class="rel-periodo-btn active" data-periodo="mes" onclick="setRelPeriodo('mes')">Mês</button>
+    <button class="rel-periodo-btn" data-periodo="total" onclick="setRelPeriodo('total')">Total</button>
+    <button class="btn btn-ghost btn-sm" id="btn-exportar-pdf" onclick="exportarRelatorioPDF()" style="margin-left:auto">Exportar PDF</button>
+  </div>
+  <div id="rel-periodo-label" class="rel-periodo-label">Relatório do mês atual</div>
+
+  <div class="cards" id="rel-cards"></div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" id="rel-chart-title">Evolução</span>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-bars" id="chart-evolucao"><div class="empty">Carregando...</div></div>
+    </div>
+    <div class="chart-legend">
+      <span><i style="background:var(--green)"></i>Entradas</span>
+      <span><i style="background:var(--red)"></i>Saídas</span>
+    </div>
+  </div>
+
+  <div class="rel-grid">
+    <div class="section">
+      <div class="section-header"><span class="section-title">Gastos por Categoria</span></div>
+      <div id="rel-cats"><div class="empty">Carregando...</div></div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-title" id="rel-comp-title">Comparação</span></div>
+      <div id="rel-meses"><div class="empty">Carregando...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- IA CHAT -->
+<div class="tab" id="tab-ia">
+  <div class="section chat-section">
+    <div class="section-header">
+      <div>
+        <span class="section-title">Assistente</span>
+        <div class="chat-contexto">Falando sobre <b id="chat-mes-label">este mês</b> — mude o mês acima ou cite outro na pergunta.</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="limparChat()">Nova conversa</button>
+    </div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-sugestoes" id="chat-sugestoes"></div>
+    <form class="chat-input-row" onsubmit="event.preventDefault(); sendChat()">
+      <input id="chat-input" placeholder="Pergunte sobre seu saldo, gastos ou peça uma estratégia..." autocomplete="off" maxlength="1000">
+      <button class="btn btn-primary" id="chat-enviar" type="submit">Enviar</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN (só aparece para a conta administradora) -->
+<div class="tab" id="tab-admin">
+  <div class="kpi-strip">
+    <div class="kpi-cell">
+      <span class="card-label">Online agora</span>
+      <span class="card-value green"><span class="dot-online pulse"></span><span id="adm-online">0</span></span>
+      <span class="card-note">app aberto ou ativo há 5 min</span>
+    </div>
+    <div class="kpi-cell">
+      <span class="card-label">Cadastrados</span>
+      <span class="card-value" id="adm-total">0</span>
+      <span class="card-note">contas no sistema</span>
+    </div>
+    <div class="kpi-cell">
+      <span class="card-label">Novos em 7 dias</span>
+      <span class="card-value" id="adm-novos">0</span>
+      <span class="card-note">cadastros na semana</span>
+    </div>
+    <div class="kpi-cell">
+      <span class="card-label">Ativos em 30 dias</span>
+      <span class="card-value" id="adm-ativos">0</span>
+      <span class="card-note">abriram o app no mês</span>
+    </div>
+  </div>
+
+  <div class="section section-flush">
+    <div class="admin-toolbar">
+      <div class="seg" id="adm-filtros">
+        <button class="active" data-f="todos" onclick="filtrarAdmin('todos')">Todos</button>
+        <button data-f="online" onclick="filtrarAdmin('online')">Online</button>
+        <button data-f="offline" onclick="filtrarAdmin('offline')">Offline</button>
+      </div>
+      <span class="admin-atualizado" id="adm-atualizado"></span>
+      <input id="adm-busca" type="search" aria-label="Buscar usuário" placeholder="Buscar nome, usuário ou e-mail" oninput="renderAdmin()">
+    </div>
+    <div id="adm-lista"><div class="empty">Carregando...</div></div>
+  </div>
+</div>
+
+</main>
+
+<!-- BARRA INFERIOR (celular) -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="active" data-tab="dashboard" onclick="showTab('dashboard')"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span>Painel</span></button>
+  <button data-tab="transacoes" onclick="showTab('transacoes')"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h13M16 3l4 4-4 4M17 17H4M8 13l-4 4 4 4"/></svg><span>Extrato</span></button>
+  <button class="bottom-add" onclick="novaTransacao()" aria-label="Lançar transação"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Lançar</span></button>
+  <button data-tab="investimentos" onclick="showTab('investimentos')"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg><span>Investir</span></button>
+  <button onclick="toggleMobileSidebar()"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01"/></svg><span>Mais</span></button>
+</nav>
+
+<div id="toast"></div>
+
+<script src="/js/instalar.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/dashboard.js"></script>
+<script src="/js/transacoes.js"></script>
+<script src="/js/parcelas.js"></script>
+<script src="/js/futuras.js"></script>
+<script src="/js/importar.js"></script>
+<script src="/js/bancos.js"></script>
+<script src="/js/investimentos.js"></script>
+<script src="/js/relatorio.js"></script>
+<script src="/js/ia-chat.js"></script>
+<script src="/js/admin.js"></script>
+<script src="/js/tour.js"></script>
+<script src="/js/auth.js"></script>
+<script>
+// ── INIT ─────────────────────────────────────────────────────
+// Roda por último, depois de todos os scripts acima carregados:
+// prepara os campos de data com hoje e tenta restaurar a sessão.
+document.getElementById('t-data').value = today();
+document.getElementById('p-data').value = today();
+atualizarOpcoesStatus();
+checkAuth();
+</script>
+</body>
+</html>

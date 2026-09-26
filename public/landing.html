@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FinanceFlow — Controle financeiro pessoal</title>
+<meta name="description" content="Organize entradas e saídas, importe o extrato do banco, acompanhe parcelas e investimentos. Grátis, no computador e no celular.">
+<meta name="theme-color" content="#0E0F0D">
+<meta property="og:title" content="FinanceFlow — Controle financeiro pessoal">
+<meta property="og:description" content="Dinheiro organizado, decisões mais calmas. Importe seu extrato e veja o mês fechado em uma tela.">
+<meta property="og:type" content="website">
+<script>
+  try {
+    var t = localStorage.getItem('ff-tema'), c = localStorage.getItem('ff-cor');
+    if (t) document.documentElement.dataset.tema = t;
+    if (c) document.documentElement.dataset.cor = c;
+  } catch (e) {}
+</script>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/ff-favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/icons/ff-apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/landing.css">
+</head>
+<body class="lp">
+
+<header class="lp-nav">
+  <div class="lp-wrap lp-nav-in">
+    <a href="/" class="brand" aria-label="FinanceFlow — início">
+      <svg class="logo-mark" width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="7"/><path d="M9 20V10h11M9 15h8"/></svg>
+      <span>FinanceFlow</span>
+    </a>
+    <nav class="lp-links" aria-label="Seções">
+      <a href="#recursos">Recursos</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#privacidade">Privacidade</a>
+      <a href="#perguntas">Perguntas</a>
+    </nav>
+    <div class="lp-nav-cta">
+      <a href="/entrar" class="btn btn-ghost">Entrar</a>
+      <a href="/entrar#cadastro" class="btn btn-primary lp-hide-sm">Criar conta grátis</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="lp-hero">
+    <div class="lp-wrap lp-hero-in">
+      <div class="lp-hero-txt">
+        <div class="eyebrow">Controle financeiro pessoal</div>
+        <h1>Dinheiro organizado,<br>decisões mais calmas.</h1>
+        <p class="lp-lead">Lance, importe o extrato do banco e acompanhe tudo o que entra e sai. O mês fechado em uma tela — no computador e no celular, sem planilha.</p>
+        <div class="lp-cta">
+          <a href="/entrar#cadastro" class="btn btn-primary lp-btn-lg">Criar conta grátis</a>
+          <a href="#como-funciona" class="btn btn-ghost lp-btn-lg">Ver como funciona</a>
+        </div>
+        <p class="lp-nota">Grátis · sem cartão de crédito · leva menos de um minuto</p>
+        <button type="button" class="lp-instalar js-instalar" onclick="instalarApp()" hidden><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Instalar o app no celular</button>
+      </div>
+
+      <!-- Prévia do produto (ilustrativa) -->
+      <div class="lp-preview" aria-hidden="true">
+        <div class="pv-top">
+          <span class="pv-dot"></span><span class="pv-dot"></span><span class="pv-dot"></span>
+          <span class="pv-url">financeflow · Painel</span>
+        </div>
+        <div class="pv-body">
+          <div class="pv-head">
+            <span class="pv-mes">Setembro 2026</span>
+            <span class="pv-btn">+ Nova transação</span>
+          </div>
+          <div class="pv-kpis">
+            <div><small>Saldo do mês</small><b class="num acc">R$ 1.284,50</b></div>
+            <div><small>Entradas</small><b class="num pos">R$ 6.850,00</b></div>
+            <div><small>Saídas</small><b class="num neg">R$ 5.565,50</b></div>
+          </div>
+          <div class="pv-grid">
+            <div class="pv-card">
+              <small>Entradas e saídas</small>
+              <div class="pv-chart">
+                <span><i style="height:62%"></i><i class="s" style="height:54%"></i></span>
+                <span><i style="height:65%"></i><i class="s" style="height:68%"></i></span>
+                <span><i style="height:66%"></i><i class="s" style="height:56%"></i></span>
+                <span><i style="height:73%"></i><i class="s" style="height:63%"></i></span>
+                <span><i style="height:66%"></i><i class="s" style="height:64%"></i></span>
+                <span><i style="height:73%"></i><i class="s" style="height:59%"></i></span>
+              </div>
+            </div>
+            <div class="pv-card">
+              <small>Para onde foi</small>
+              <div class="pv-cat"><span>Moradia</span><em style="width:100%"></em></div>
+              <div class="pv-cat"><span>Alimentação</span><em style="width:61%"></em></div>
+              <div class="pv-cat"><span>Transporte</span><em style="width:34%"></em></div>
+              <div class="pv-cat"><span>Lazer</span><em style="width:18%"></em></div>
+            </div>
+          </div>
+          <div class="pv-card pv-ledger">
+            <div><span class="num dim">24/09</span><span>Mercado</span><span class="num">− 238,70</span></div>
+            <div><span class="num dim">22/09</span><span>Freela identidade visual</span><span class="num pos">+ 650,00</span></div>
+            <div><span class="num dim">20/09</span><span>Conta de luz <em>Pendente</em></span><span class="num">− 189,40</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="lp-faixa">
+    <div class="lp-wrap">Funciona com o extrato de qualquer banco — <b>OFX, CSV, Excel ou PDF</b>. Você não precisa entregar a senha do banco.</div>
+  </div>
+
+  <!-- RECURSOS -->
+  <section class="lp-sec" id="recursos">
+    <div class="lp-wrap">
+      <div class="lp-sec-head">
+        <div class="eyebrow">Recursos</div>
+        <h2>Tudo o que o seu dinheiro precisa, sem excesso.</h2>
+      </div>
+      <div class="lp-recursos">
+        <article>
+          <svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+          <h3>Painel do mês</h3>
+          <p>Saldo, entradas, saídas e o saldo que veio do mês anterior. Gráfico dos últimos seis meses e para onde foi cada real.</p>
+        </article>
+        <article>
+          <svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          <h3>Importação de extrato</h3>
+          <p>Envie o arquivo do banco e as transações entram sozinhas, sem duplicar. O banco é reconhecido automaticamente.</p>
+        </article>
+        <article>
+          <svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18M7 15h4"/></svg>
+          <h3>Parcelas e contas futuras</h3>
+          <p>Compras parceladas geram as parcelas de cada mês. Contas previstas aparecem antes de vencer.</p>
+        </article>
+        <article>
+          <svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
+          <h3>Assistente com IA</h3>
+          <p>Pergunte "quanto gastei com mercado?" e receba a resposta com base nos seus próprios lançamentos.</p>
+        </article>
+        <article>
+          <svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>
+          <h3>Investimentos</h3>
+          <p>Ações, FIIs, cripto e renda fixa em um lugar, com cotação atualizada e lucro ou prejuízo de cada posição.</p>
+        </article>
+        <article>
+          <svg class="ico" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 21h4"/></svg>
+          <h3>Avisos no celular</h3>
+          <p>Notificação quando passar do limite de gasto do mês e no dia em que uma conta vence.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="lp-sec lp-sec-alt" id="como-funciona">
+    <div class="lp-wrap">
+      <div class="lp-sec-head">
+        <div class="eyebrow">Como funciona</div>
+        <h2>Três passos e o mês está organizado.</h2>
+      </div>
+      <ol class="lp-passos">
+        <li>
+          <span class="num">01</span>
+          <h3>Crie sua conta</h3>
+          <p>Nome, usuário, e-mail e senha. Seu painel começa zerado e só você tem acesso a ele.</p>
+        </li>
+        <li>
+          <span class="num">02</span>
+          <h3>Traga seus lançamentos</h3>
+          <p>Importe o extrato do banco ou lance na mão. Pelo celular, o botão "Lançar" fica sempre à mão.</p>
+        </li>
+        <li>
+          <span class="num">03</span>
+          <h3>Acompanhe e ajuste</h3>
+          <p>Veja o saldo, marque o que já foi pago, defina um limite de gasto e peça dicas ao assistente.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- PRIVACIDADE -->
+  <section class="lp-sec" id="privacidade">
+    <div class="lp-wrap lp-priv">
+      <div>
+        <div class="eyebrow">Privacidade</div>
+        <h2>Seus dados são seus.</h2>
+        <p class="lp-lead">Finanças são assunto pessoal. O FinanceFlow foi feito para que ninguém além de você veja o que você lança.</p>
+      </div>
+      <ul class="lp-priv-lista">
+        <li><b>Conta individual.</b> Cada pessoa vê apenas os próprios lançamentos, bancos e investimentos.</li>
+        <li><b>Sem senha do banco.</b> Você importa o arquivo do extrato; nenhum acesso à sua conta bancária é pedido.</li>
+        <li><b>Senha protegida.</b> Sua senha é guardada criptografada — nem o administrador consegue lê-la.</li>
+        <li><b>Leve seus dados embora.</b> Baixe tudo numa planilha Excel quando quiser, ou exclua a conta e tudo o que há nela.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PERGUNTAS -->
+  <section class="lp-sec lp-sec-alt" id="perguntas">
+    <div class="lp-wrap lp-faq-wrap">
+      <div class="lp-sec-head">
+        <div class="eyebrow">Perguntas frequentes</div>
+        <h2>Antes de começar.</h2>
+      </div>
+      <div class="lp-faq">
+        <details>
+          <summary>Quanto custa?</summary>
+          <p>Nada. Criar a conta e usar o FinanceFlow é grátis, sem cartão de crédito.</p>
+        </details>
+        <details>
+          <summary>Preciso conectar minha conta do banco?</summary>
+          <p>Não. Você exporta o extrato pelo app ou site do seu banco (OFX, CSV, Excel ou PDF) e envia o arquivo. Também dá para lançar tudo na mão.</p>
+        </details>
+        <details>
+          <summary>Funciona no celular?</summary>
+          <p>Sim. Toque em <a href="#" onclick="event.preventDefault(); instalarApp()">Instalar o app no celular</a> — no Android ele instala direto; no iPhone mostramos o passo a passo pelo Safari. Depois ele abre em tela cheia, como um aplicativo, com avisos de vencimento e limite de gasto.</p>
+        </details>
+        <details>
+          <summary>Dá para usar em casal ou família?</summary>
+          <p>Cada pessoa pode ter a própria conta. Dentro de uma conta, os bancos podem ser separados por titular — por exemplo, o seu Nubank e o Nubank de quem mora com você.</p>
+        </details>
+        <details>
+          <summary>Posso sair quando quiser?</summary>
+          <p>Pode. Em "Minha conta" você baixa todos os seus dados numa planilha e, se quiser, exclui a conta definitivamente.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="lp-final">
+    <div class="lp-wrap lp-final-in">
+      <h2>Comece o próximo mês organizado.</h2>
+      <p>Crie sua conta em menos de um minuto.</p>
+      <div class="lp-cta">
+        <a href="/entrar#cadastro" class="btn btn-primary lp-btn-lg">Criar conta grátis</a>
+        <a href="/entrar" class="btn btn-ghost lp-btn-lg">Já tenho conta</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="lp-foot">
+  <div class="lp-wrap lp-foot-in">
+    <span class="brand"><svg class="logo-mark" width="22" height="22" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="7"/><path d="M9 20V10h11M9 15h8"/></svg><span>FinanceFlow</span></span>
+    <span>© <span id="ano"></span> FinanceFlow · Controle financeiro pessoal</span>
+    <a href="/entrar">Entrar</a>
+  </div>
+</footer>
+
+<script src="/js/instalar.js"></script>
+<script>document.getElementById('ano').textContent = new Date().getFullYear();</script>
+</body>
+</html>
