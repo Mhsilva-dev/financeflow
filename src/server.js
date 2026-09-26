@@ -11,8 +11,14 @@ const http      = require('http');
 const WebSocket = require('ws');
 
 // ── Validação de variáveis de ambiente obrigatórias ──────────────────────────
+// Sem SESSION_SECRET, produção não sobe; em desenvolvimento usa um segredo aleatório (sessões caem a cada reinício)
 if (!process.env.SESSION_SECRET) {
-  console.warn('[Config] SESSION_SECRET não definido — usando fallback (não recomendado em produção)');
+  if (process.env.NODE_ENV === 'production') {
+    console.error('[Config] SESSION_SECRET não definido — obrigatório em produção');
+    process.exit(1);
+  }
+  process.env.SESSION_SECRET = require('crypto').randomBytes(32).toString('hex');
+  console.warn('[Config] SESSION_SECRET não definido — usando um segredo temporário de desenvolvimento');
 }
 if (!process.env.GEMINI_API_KEY) {
   console.warn('[Config] GEMINI_API_KEY não definida — assistente IA ficará indisponível');
@@ -55,7 +61,7 @@ const sessionParser = session({
     retries: 1,
     logFn: () => {}       // silencia logs internos do FileStore
   }),
-  secret: process.env.SESSION_SECRET || 'financeflow-secret-dev',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
